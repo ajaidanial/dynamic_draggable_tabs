@@ -8,6 +8,7 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="./main.css">
 
     <!-- JS -->
@@ -22,9 +23,50 @@
         <ul class="nav nav-tabs" id="top_tabs_holder"></ul>
 
         <div class="tab-content">
-            <div class="tab-pane active">
-                <h3>HOME</h3>
-                <p>Some content.</p>
+            <div id="tab_content_container" class="tab-pane active">
+            </div>
+            <button class="btn" id="add_tab_content_button">+ Add Tab Content</button>
+        </div>
+    </div>
+
+    <div id="add_update_model" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add/Update Tab Contents</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="add_update_model_submit_form">
+                        <div id="add_update_model_main_content">
+                            <div class="form-group">
+                                <label>Session Name</label>
+                                <input required name="session_name" type="text" class="form-control"
+                                    placeholder="Session Name">
+                            </div>
+                            <div class="form-group">
+                                <label>Date</label>
+                                <input required name="session_date" type="date" class="form-control" placeholder="Date">
+                            </div>
+                            <div class="form-group">
+                                <label>From</label>
+                                <input required name="session_from" type="time" class="form-control" placeholder="From">
+                            </div>
+                            <div class="form-group">
+                                <label>To</label>
+                                <input required name="session_to" type="time" class="form-control" placeholder="To">
+                            </div>
+                            <div class="form-group">
+                                <label>Session Description</label>
+                                <textarea required name="session_description" class="form-control" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <button id="add_update_model_submit_button" type="submit" class="btn btn-primary">Save
+                            Changes</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -34,9 +76,11 @@
         // main page global states
         let main_page_data = {}
         let currently_active_top_tab = null
+        let add_update_model_data = null
 
         function initPageElements() {
             renderTopTabs()
+            renderTabContents()
             mapEventsToElements()
         }
 
@@ -84,13 +128,53 @@
                 initPageElements()
             })
 
+            $("#add_tab_content_button").click(function () {
+                reinitAddUpdateModelValues()
+                $("#add_update_model").modal('show')
+            })
+
+            $('#add_update_model_submit_form').on('submit', function (e) {
+                alert("Form Submitted") // TODO: some bug here, this function is being called twice
+
+                $("#add_update_model").modal('hide')
+                e.preventDefault()
+                e.stopPropagation();
+
+                let saved_data = {}
+
+                $("#add_update_model_main_content input").each((index, element) => {
+                    saved_data[element.name] = element.value
+                })
+
+                $("#add_update_model_main_content textarea").each((index, element) => {
+                    saved_data[element.name] = element.value
+                })
+
+                // get data, save it and render tab content
+                main_page_data[currently_active_top_tab].push(saved_data)
+                initPageElements()
+
+            });
+
             // ... add other events handlers here
+        }
+
+        function reinitAddUpdateModelValues() {
+            let model_data = add_update_model_data
+
+            if (model_data === null) {
+                $("#add_update_model_main_content input").val("")
+                $("#add_update_model_main_content textarea").val("")
+            } else {
+                // fill data
+                alert("test")
+            }
         }
 
         function renderTopTabs() {
             // renders the top tabs based on the main_page_data
 
-            let add_tabs_button = `<li id="add_top_tabs_button"><a>+</a></li>`
+            let add_tabs_button = `<li id="add_top_tabs_button"><a>+ Add Tabs</a></li>`
             $("#top_tabs_holder").empty()
 
             $.each(main_page_data, function (tab_id, tab_content) {
@@ -99,6 +183,44 @@
             });
 
             $("#top_tabs_holder").append(add_tabs_button)
+        }
+
+        function renderTabContents() {
+            if (currently_active_top_tab === null) {
+                $("#add_tab_content_button").css("display", "none")
+            } else {
+                $("#add_tab_content_button").css("display", "block")
+            }
+
+            let tab_to_render = currently_active_top_tab
+            if (tab_to_render === null) {
+                // break out of the function is no tabs are active to render
+                return null
+            }
+
+            let tab_content = main_page_data[tab_to_render]
+            let html_tab_container = $("#tab_content_container")
+            html_tab_container.empty()
+
+            tab_content.forEach((element, index) => {
+                // h4 content
+                let inner_content = ``
+                $.each(element, function (key, value) {
+                    inner_content += `<h4 class="${key}">${key}: ${value}</h4>`
+                });
+                // append data to html body`
+                let tab_single_content = `
+                <div class="tab_content_holder">
+                    ${inner_content}
+                    <div class="actions">
+                        <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary edit_tab_single_content">Edit</button>
+                        <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary move_tab_single_content">Move</button>
+                        <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary delete_tab_single_content">Delete</button>
+                    </div>
+                </div>
+                `
+                html_tab_container.append(tab_single_content)
+            });
         }
 
         window.onload = function () {

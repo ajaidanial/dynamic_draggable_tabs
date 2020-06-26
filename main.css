@@ -1,3 +1,37 @@
 .app_container {
     padding: 20px;
 }
+
+#tab_content_container {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0px;
+}
+
+.tab_content_holder {
+    margin: 10px 0px;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #EFEFEF;
+    display: flex;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.tab_content_holder h4 {
+    margin: 10px;
+    width: 260px;
+    padding: 10px 5px;
+}
+
+.tab_content_holder .actions {
+    padding: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    display: flex;
+}
+
+.tab_content_holder .actions button {
+    margin: 0 5px;
+}
