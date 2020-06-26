@@ -192,7 +192,17 @@
                 })
 
                 // get data, save it and render tab content
-                main_page_data[currently_active_top_tab].push(saved_data)
+                if ("tab_id" in add_update_model_data && "tab_content_id" in add_update_model_data) {
+                    // update function
+                    let tab_id = add_update_model_data['tab_id']
+                    let tab_content_id = add_update_model_data['tab_content_id']
+
+                    main_page_data[tab_id.toString()][tab_content_id] = saved_data
+                } else {
+                    // add function
+                    main_page_data[currently_active_top_tab].push(saved_data)
+                }
+
                 initPageElements()
 
             });
