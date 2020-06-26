@@ -259,14 +259,15 @@
             }
 
             let tab_to_render = currently_active_top_tab
+            let html_tab_container = $("#tab_content_container")
+            html_tab_container.empty()
+
             if (tab_to_render === null) {
                 // break out of the function is no tabs are active to render
                 return null
             }
 
             let tab_content = main_page_data[tab_to_render]
-            let html_tab_container = $("#tab_content_container")
-            html_tab_container.empty()
 
             tab_content.forEach((element, index) => {
                 // h4 content
