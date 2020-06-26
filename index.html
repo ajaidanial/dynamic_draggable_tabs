@@ -111,7 +111,7 @@
                 let tab_key = $(this).attr("key")
                 currently_active_top_tab = tab_key
 
-                // render tabs content
+                initPageElements()
             })
 
             // toggle top tabs button
@@ -200,7 +200,7 @@
         function renderTopTabs() {
             // renders the top tabs based on the main_page_data
 
-            let add_tabs_button = `<li id="add_top_tabs_button"><a>+ Add Tabs</a></li>`
+            let add_tabs_button = `<li id="add_top_tabs_button"><a><button class="btn btn-success">+</button></a></li>`
             $("#top_tabs_holder").empty()
 
             $.each(main_page_data, function (tab_id, tab_content) {
