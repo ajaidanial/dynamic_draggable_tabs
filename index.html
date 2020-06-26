@@ -160,6 +160,21 @@
                 initPageElements()
             })
 
+            $(".edit_tab_single_content").click(function () {
+                let clicked_ele = $(this)
+                let tab_id = clicked_ele.attr("tabKey")
+                let tabContent_id = clicked_ele.attr("tabContentKey")
+
+                let editable_data = main_page_data[tab_id.toString()][tabContent_id]
+                editable_data['tab_id'] = tab_id.toString()
+                editable_data['tab_content_id'] = tabContent_id.toString()
+
+                add_update_model_data = editable_data
+                reinitAddUpdateModelValues()
+                $("#add_update_model").modal('show')
+
+            })
+
             $('#add_update_model_submit_form').on('submit', function (e) {
                 $("#add_update_model").modal('hide')
                 e.preventDefault()
@@ -192,8 +207,23 @@
                 $("#add_update_model_main_content input").val("")
                 $("#add_update_model_main_content textarea").val("")
             } else {
+
                 // fill data
-                alert("test")
+
+                $.each(model_data, function (input_key, intput_value) {
+                    $("#add_update_model_main_content input").each((index, element) => {
+                        if (element.name === input_key.toString()) {
+                            element.value = intput_value
+                        }
+                    })
+
+                    $("#add_update_model_main_content textarea").each((index, element) => {
+                        if (element.name === input_key.toString()) {
+                            element.value = intput_value
+                        }
+                    })
+                });
+
             }
         }
 
