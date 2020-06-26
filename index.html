@@ -207,6 +207,15 @@
 
             });
 
+            // drag & drop
+
+            [].forEach.call($(".draggable"), function (item) {
+                item.addEventListener('dragstart', dragStart, false);
+                item.addEventListener('dragover', dragOver, false);
+                item.addEventListener('dragleave', dragLeave, false);
+                item.addEventListener('drop', dragDrop, false);
+            });
+
             // ... add other events handlers here
         }
 
@@ -277,17 +286,48 @@
                 });
                 // append data to html body`
                 let tab_single_content = `
-                <div class="tab_content_holder">
+                <div key="${index}" class="tab_content_holder draggable" draggable="true">
                     ${inner_content}
                     <div class="actions">
                         <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary edit_tab_single_content">Edit</button>
-                        <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary move_tab_single_content">Move</button>
+                        <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary move_tab_single_content">Drag & Drop</button>
                         <button tabKey="${tab_to_render}" tabContentKey="${index}" class="btn btn-primary delete_tab_single_content">Delete</button>
                     </div>
                 </div>
                 `
                 html_tab_container.append(tab_single_content)
             });
+        }
+
+        // drag & drop functionality
+
+        function dragStart(e) {
+            window.dragged_element_index = $(this).attr("key");
+        };
+
+        function dragLeave(e) {
+            e.stopPropagation();
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            return false;
+        }
+
+        function dragDrop(e) {
+            let dropped_element_index = $(this).attr("key");
+            if (window.dragged_element_index.toString() !== dropped_element_index.toString()) {
+
+                let dropped_data = main_page_data[currently_active_top_tab.toString()][dropped_element_index]
+                let dragged_data = main_page_data[currently_active_top_tab.toString()][dragged_element_index]
+
+                main_page_data[currently_active_top_tab.toString()][dropped_element_index] = dragged_data
+                main_page_data[currently_active_top_tab.toString()][dragged_element_index] = dropped_data
+
+                initPageElements()
+            }
+
+            return false;
         }
 
         window.onload = function () {

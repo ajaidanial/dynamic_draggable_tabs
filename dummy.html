@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<!-- Code By Webdevtrick ( https://webdevtrick.com )-->
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Drag and Drop List | Webdevtrick.com</title>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <ul>
+        <li class="draggable" draggable="true">HTML</li>
+        <li class="draggable" draggable="true">CSS</li>
+        <li class="draggable" draggable="true">JavaScript</li>
+        <li class="draggable" draggable="true">PHP</li>
+        <li class="draggable" draggable="true">MySQL</li>
+    </ul>
+
+    <script>
+
+        function dragStart(e) {
+            this.style.opacity = '0.4';
+            dragSrcEl = this;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/html', this.innerHTML);
+        };
+
+
+        function dragLeave(e) {
+            e.stopPropagation();
+            this.classList.remove('over');
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            return false;
+        }
+
+        function dragDrop(e) {
+            if (dragSrcEl != this) {
+                dragSrcEl.innerHTML = this.innerHTML;
+                this.innerHTML = e.dataTransfer.getData('text/html');
+            }
+            return false;
+        }
+
+
+
+        function addEventsDragAndDrop(el) {
+            el.addEventListener('dragstart', dragStart, false);
+            el.addEventListener('dragover', dragOver, false);
+            el.addEventListener('dragleave', dragLeave, false);
+            el.addEventListener('drop', dragDrop, false);
+        }
+
+        var listItens = document.querySelectorAll('.draggable');
+        [].forEach.call(listItens, function (item) {
+            addEventsDragAndDrop(item);
+        });
+
+    </script>
+
+</body>
+
+</html>
