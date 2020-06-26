@@ -32,18 +32,23 @@
     <script>
 
         // main page global states
-        let main_page_data = {
-            "1": [],
-        }
-        let currently_active_top_tab = "1"
+        let main_page_data = {}
+        let currently_active_top_tab = null
 
         function mapEventsToElements() {
             // add new top tabs button
             $("#add_top_tabs_button").click(function () {
                 let next_tab_key_int = Object.keys(main_page_data).length + 1
-                main_page_data[next_tab_key_int.toString()] = []
+                let next_tab_key_str = next_tab_key_int.toString()
+                main_page_data[next_tab_key_str] = []
+
+                if (currently_active_top_tab === null) {
+                    currently_active_top_tab = next_tab_key_str
+                }
+
                 renderTopTabs()
                 mapEventsToElements()
+
             })
 
             // toggle top tabs button
