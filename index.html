@@ -35,6 +35,11 @@
         let main_page_data = {}
         let currently_active_top_tab = null
 
+        function initPageElements() {
+            renderTopTabs()
+            mapEventsToElements()
+        }
+
         function mapEventsToElements() {
             // add new top tabs button
             $("#add_top_tabs_button").click(function () {
@@ -46,9 +51,7 @@
                     currently_active_top_tab = next_tab_key_str
                 }
 
-                renderTopTabs()
-                mapEventsToElements()
-
+                initPageElements()
             })
 
             // toggle top tabs button
@@ -57,6 +60,28 @@
                 currently_active_top_tab = tab_key
 
                 // render tabs content
+            })
+
+            // toggle top tabs button
+            $(".top_tab_delete_button").click(function () {
+                let to_delete_tab_key_str = $(this).attr("key").toString()
+
+                if (currently_active_top_tab === to_delete_tab_key_str) {
+                    currently_active_top_tab = null
+                }
+
+                let after_deleted_main_page_data = {}
+                let data_index = 1
+                $.each(main_page_data, function (tab_id, tab_content) {
+                    if (tab_id !== to_delete_tab_key_str) {
+                        after_deleted_main_page_data[data_index.toString()] = tab_content
+                        data_index += 1
+                    }
+                });
+                main_page_data = after_deleted_main_page_data
+
+                // remove tab and rerender tab content
+                initPageElements()
             })
 
             // ... add other events handlers here
@@ -69,7 +94,7 @@
             $("#top_tabs_holder").empty()
 
             $.each(main_page_data, function (tab_id, tab_content) {
-                let element_to_insert = `<li id="tabtop-${tab_id}" key="${tab_id}" class="${tab_id === currently_active_top_tab && 'active'} top_tab_button"><a data-toggle="tab">TabTop - ${tab_id}</a></li>`
+                let element_to_insert = `<li id="tabtop-${tab_id}" key="${tab_id}" class="${tab_id === currently_active_top_tab && 'active'} top_tab_button"><a data-toggle="tab">TabTop - ${tab_id} <button key="${tab_id}" class="btn btn-danger top_tab_delete_button">-</button></a></li>`
                 $("#top_tabs_holder").append(element_to_insert)
             });
 
@@ -78,12 +103,7 @@
 
         window.onload = function () {
             // init the entire page 
-            renderTopTabs()
-
-            // call the tab content renderer
-
-            // init event handlers
-            mapEventsToElements()
+            initPageElements()
         }
 
     </script>
