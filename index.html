@@ -74,8 +74,16 @@
     <script>
 
         // main page global states
-        let main_page_data = {}
-        let currently_active_top_tab = null
+        let main_page_data = {
+            "1": [{
+                session_date: "2020-06-06",
+                session_description: "Description",
+                session_from: "15:10",
+                session_name: "Name",
+                session_to: "15:10",
+            }]
+        }
+        let currently_active_top_tab = "1"
         let add_update_model_data = null
 
         function initPageElements() {
@@ -133,9 +141,26 @@
                 $("#add_update_model").modal('show')
             })
 
-            $('#add_update_model_submit_form').on('submit', function (e) {
-                alert("Form Submitted") // TODO: some bug here, this function is being called twice
+            $(".delete_tab_single_content").click(function () {
+                let clicked_ele = $(this)
+                let tab_id = clicked_ele.attr("tabKey")
+                let tabContent_id = clicked_ele.attr("tabContentKey")
 
+                let tab_content_data = main_page_data[tab_id.toString()]
+                let new_tab_content_data = []
+
+                tab_content_data.forEach((element, index) => {
+                    if (index.toString() !== tabContent_id.toString()) {
+                        new_tab_content_data.push(element)
+                    }
+                })
+
+                main_page_data[tab_id.toString()] = new_tab_content_data
+
+                initPageElements()
+            })
+
+            $('#add_update_model_submit_form').on('submit', function (e) {
                 $("#add_update_model").modal('hide')
                 e.preventDefault()
                 e.stopImmediatePropagation();
