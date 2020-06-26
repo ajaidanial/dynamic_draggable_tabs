@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Draggable Tabs</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./main.css">
+
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="./main.js"></script>
+</head>
+
+<body>
+
+    <div class="container app_container">
+        <ul class="nav nav-tabs" id="top_tabs_holder"></ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active">
+                <h3>HOME</h3>
+                <p>Some content.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // main page global states
+        let main_page_data = {
+            "1": [],
+        }
+        let currently_active_top_tab = "1"
+
+        function mapEventsToElements() {
+            // add new top tabs button
+            $("#add_top_tabs_button").click(function () {
+                let next_tab_key_int = Object.keys(main_page_data).length + 1
+                main_page_data[next_tab_key_int.toString()] = []
+                renderTopTabs()
+                mapEventsToElements()
+            })
+
+            // toggle top tabs button
+            $(".top_tab_button").click(function () {
+                let tab_key = $(this).attr("key")
+                currently_active_top_tab = tab_key
+
+                // render tabs content
+            })
+
+            // ... add other events handlers here
+        }
+
+        function renderTopTabs() {
+            // renders the top tabs based on the main_page_data
+
+            let add_tabs_button = `<li id="add_top_tabs_button"><a>+</a></li>`
+            $("#top_tabs_holder").empty()
+
+            $.each(main_page_data, function (tab_id, tab_content) {
+                let element_to_insert = `<li id="tabtop-${tab_id}" key="${tab_id}" class="${tab_id === currently_active_top_tab && 'active'} top_tab_button"><a data-toggle="tab">TabTop - ${tab_id}</a></li>`
+                $("#top_tabs_holder").append(element_to_insert)
+            });
+
+            $("#top_tabs_holder").append(add_tabs_button)
+        }
+
+        window.onload = function () {
+            // init the entire page 
+            renderTopTabs()
+
+            // call the tab content renderer
+
+            // init event handlers
+            mapEventsToElements()
+        }
+
+    </script>
+
+</body>
+
+</html>
